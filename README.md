@@ -93,6 +93,23 @@ Row Level Security (RLS) sudah dikonfigurasi dalam migration. Pastikan ia enable
 2. Pastikan "Enable Email Confirmations" adalah **OFF** untuk development
 3. Untuk production, enable dan configure email templates
 
+#### e. Setup Admin Account (PENTING!)
+
+Selepas run migrations, anda perlu create admin account untuk akses penuh:
+
+1. Run migration ketiga untuk helper functions:
+   - Buka SQL Editor di Supabase
+   - Copy & run `supabase/migrations/003_admin_helpers.sql`
+
+2. Register user pertama di aplikasi (`/auth/register`)
+
+3. Promote user tersebut ke admin:
+   ```sql
+   SELECT promote_user_to_admin('your-email@example.com');
+   ```
+
+📖 **Panduan lengkap**: Lihat [SETUP_ADMIN.md](./SETUP_ADMIN.md) untuk cara membuat admin, lecturer, dan user accounts.
+
 ### 4. Environment Variables
 
 Copy `.env.local.example` ke `.env.local`:
