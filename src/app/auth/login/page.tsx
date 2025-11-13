@@ -70,13 +70,11 @@ export default function LoginPage() {
       // Login successful! Show success message and redirect
       toast.success('Log masuk berjaya!');
 
-      // Use client-side navigation for better control
-      // Give a small delay to ensure cookies are set
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Redirect using router
-      router.push(redirectTo);
-      router.refresh();
+      // Use hard navigation to ensure cookies are properly sent to middleware
+      // This is necessary because soft navigation (router.push) doesn't guarantee
+      // that the auth cookies set by the server action will be available in the
+      // middleware on the next request
+      window.location.href = redirectTo;
     } catch (error: any) {
       // For actual errors, show error message
       toast.error('Ralat tidak dijangka berlaku');
