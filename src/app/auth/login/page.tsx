@@ -55,33 +55,27 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await loginUser(
-        {
-          email: formData.email,
-          password: formData.password,
-        },
-        redirectTo
-      );
+      const result = await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // If we reach here, it means login failed (successful login will redirect)
+      // If login failed, show error
       if (!result.success) {
         toast.error(result.error || 'Log masuk gagal');
         setLoading(false);
         return;
       }
 
-      // This shouldn't be reached due to server-side redirect, but just in case
+      // Login successful! Show success message
       toast.success('Log masuk berjaya!');
-      setLoading(false);
-    } catch (error: any) {
-      // Next.js redirect() throws a special error with digest property
-      // This is expected behavior and means redirect is happening
-      if (error?.digest?.startsWith('NEXT_REDIRECT')) {
-        // Redirect is happening, this is expected
-        toast.success('Log masuk berjaya!');
-        return;
-      }
 
+      // Refresh router to pick up new auth state from middleware
+      router.refresh();
+
+      // Navigate to destination - middleware will handle auth validation
+      router.push(redirectTo);
+    } catch (error: any) {
       // For actual errors, show error message
       toast.error('Ralat tidak dijangka berlaku');
       console.error(error);
