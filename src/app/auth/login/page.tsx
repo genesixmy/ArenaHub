@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { loginUser } from '../actions';
 import toast from 'react-hot-toast';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirectTo') || '/dashboard';
 
@@ -55,26 +54,32 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // Server action will handle redirect after successful login
+      // The redirect() call will throw a Next.js NEXT_REDIRECT error which is expected behavior
       const result = await loginUser({
         email: formData.email,
         password: formData.password,
+        redirectTo,
       });
 
-      if (result.success) {
-        toast.success('Log masuk berjaya!');
-        // Refresh server components to ensure cookies are loaded, then navigate
-        router.refresh();
-        // Small delay to ensure refresh completes
-        setTimeout(() => {
-          router.push(redirectTo);
-        }, 100);
-      } else {
+      // If we reach here, it means login failed (successful login would have redirected)
+      if (result && !result.success) {
         toast.error(result.error || 'Log masuk gagal');
+      } else {
+        toast.error('Log masuk gagal');
       }
-    } catch (error) {
+      setLoading(false);
+    } catch (error: any) {
+      // Check if this is a Next.js redirect (which is expected and should not show error)
+      if (error?.digest?.startsWith('NEXT_REDIRECT')) {
+        // This is the expected redirect behavior - login successful!
+        toast.success('Log masuk berjaya!');
+        return;
+      }
+
+      // For actual errors, show error message
       toast.error('Ralat tidak dijangka berlaku');
       console.error(error);
-    } finally {
       setLoading(false);
     }
   };
