@@ -89,9 +89,17 @@ Row Level Security (RLS) sudah dikonfigurasi dalam migration. Pastikan ia enable
 
 #### d. Configure Auth Settings
 
-1. Pergi ke Dashboard > Authentication > Settings
-2. Pastikan "Enable Email Confirmations" adalah **OFF** untuk development
-3. Untuk production, enable dan configure email templates
+**PENTING: Ikuti langkah ini dengan teliti!**
+
+1. Pergi ke Dashboard > Authentication > **Providers**
+2. Pastikan **Email** provider adalah **ENABLED** (hijau)
+3. Pergi ke Dashboard > Authentication > **Settings**
+4. Pastikan **"Enable email signup"** adalah **ON** (checked) ✅
+   - **Tanpa ini, registration akan error: "Email signups are disabled"**
+5. Pastikan **"Enable Email Confirmations"** adalah **OFF** (unchecked) ❌ untuk development
+   - Ini memudahkan testing tanpa perlu verify email
+6. Klik **Save**
+7. Untuk production, enable semula email confirmations
 
 #### e. Setup Admin Account (PENTING!)
 
@@ -268,19 +276,32 @@ Selepas deploy, update redirect URLs di Supabase:
 
 ## 🐛 Troubleshooting
 
-### "Invalid API Key"
+### ❌ Common Issues
+
+**"Email signups are disabled"**
+- Enable email signup di Supabase Dashboard > Authentication > Providers & Settings
+- Lihat panduan lengkap di [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+
+**"Invalid API Key"**
 - Pastikan environment variables betul
 - Check spacing dan hidden characters
 - Restart dev server selepas update .env.local
 
-### "Institution not found"
+**"Institution not found"**
 - Run seed migration (002_seed_data.sql)
 - Atau tambah institusi via Admin Panel
 
-### Auth tidak berfungsi
+**Auth tidak berfungsi**
 - Check Supabase auth settings
 - Verify RLS policies enabled
 - Check middleware configuration
+
+### 📖 Panduan Lengkap
+
+Untuk troubleshooting lengkap dan penyelesaian masalah lain, lihat:
+- [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Panduan penyelesaian masalah lengkap
+- [SETUP_GUIDE.md](./SETUP_GUIDE.md) - Setup guide step-by-step
+- [SETUP_ADMIN.md](./SETUP_ADMIN.md) - Panduan setup admin account
 
 ## 📝 TODO (Future Features)
 
