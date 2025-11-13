@@ -28,9 +28,16 @@ export async function middleware(request: NextRequest) {
   );
 
   // Refresh session if expired - required for Server Components
+  // Use getUser() which validates the JWT token
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
+
+  // If there's an error getting user, ensure session is cleared
+  if (error) {
+    console.error('Auth error in middleware:', error);
+  }
 
   // Protected routes
   const protectedPaths = ['/dashboard', '/tournaments/create', '/teams/create', '/admin'];

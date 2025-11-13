@@ -67,13 +67,13 @@ export default function LoginPage() {
         return;
       }
 
-      // Login successful! Show success message and redirect
+      // Login successful! Show success message
       toast.success('Log masuk berjaya!');
 
-      // Use hard navigation to ensure cookies are properly sent to middleware
-      // This is necessary because soft navigation (router.push) doesn't guarantee
-      // that the auth cookies set by the server action will be available in the
-      // middleware on the next request
+      // Wait a bit for cookies to be set properly, then do a hard navigation
+      // This ensures the middleware can properly read the auth cookies
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       window.location.href = redirectTo;
     } catch (error: any) {
       // For actual errors, show error message
