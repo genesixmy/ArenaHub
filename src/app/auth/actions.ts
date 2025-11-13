@@ -77,10 +77,13 @@ export async function registerUser(formData: {
 /**
  * Login user
  */
-export async function loginUser(formData: {
-  email: string;
-  password: string;
-}): Promise<AuthResult> {
+export async function loginUser(
+  formData: {
+    email: string;
+    password: string;
+  },
+  redirectTo?: string
+): Promise<AuthResult> {
   const supabase = await createClient();
 
   try {
@@ -101,12 +104,15 @@ export async function loginUser(formData: {
     revalidatePath('/', 'layout');
     revalidatePath('/dashboard');
 
-    // Return success - client will handle redirect
-    return {
-      success: true,
-      data: { user: data.user },
-    };
+    // Do server-side redirect after successful login
+    // This ensures cookies are properly set before redirect happens
+    redirect(redirectTo || '/dashboard');
   } catch (error: any) {
+    // Check if error is a redirect (which is expected from Next.js redirect())
+    if (error && typeof error === 'object' && 'digest' in error) {
+      // This is a Next.js redirect, re-throw it
+      throw error;
+    }
     return { success: false, error: error.message || 'Ralat tidak dijangka' };
   }
 }
