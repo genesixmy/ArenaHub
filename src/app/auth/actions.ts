@@ -34,7 +34,24 @@ export async function registerUser(formData: {
     });
 
     if (authError) {
-      return { success: false, error: authError.message };
+      // Provide helpful error messages for common issues
+      let errorMessage = authError.message;
+
+      if (authError.message.includes('Email signups are disabled')) {
+        errorMessage =
+          'Email signup tidak diaktifkan. Sila aktifkan di Supabase Dashboard:\n' +
+          '1. Pergi ke Authentication > Providers\n' +
+          '2. Pastikan Email provider ENABLED\n' +
+          '3. Pergi ke Authentication > Settings\n' +
+          '4. Enable "Enable email signup"\n' +
+          '5. Klik Save';
+      } else if (authError.message.includes('Email not confirmed')) {
+        errorMessage =
+          'Email perlu disahkan. Untuk development, disable "Enable Email Confirmations" ' +
+          'di Supabase Dashboard > Authentication > Settings';
+      }
+
+      return { success: false, error: errorMessage };
     }
 
     if (!authData.user) {

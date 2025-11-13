@@ -93,20 +93,24 @@ Pergi ke **Table Editor**. Anda sepatutnya nampak tables:
 ### Step 4: Configure Authentication
 
 1. Pergi ke **Authentication** > **Providers**
-2. **Email** provider sepatutnya dah enabled by default
+2. Pastikan **Email** provider adalah **ENABLED** (hijau/turned on)
+   - Jika tidak, klik toggle untuk enable
 3. Pergi ke **Authentication** > **URL Configuration**
 4. Add redirect URL untuk local development:
    ```
    http://localhost:3000/auth/callback
    ```
 
-#### Untuk Development: Disable Email Confirmation
+#### Untuk Development: Configure Email Settings
 
 1. Pergi ke **Authentication** > **Settings**
-2. Cari **"Enable email confirmations"**
-3. **Matikan** (turn OFF) untuk development
+2. **PENTING:** Pastikan **"Enable email signup"** adalah **ON** (checked) ✅
+   - Tanpa ini, user tidak boleh register!
+3. Cari **"Enable email confirmations"**
+4. **Matikan** (turn OFF) untuk development ❌
    - Ini memudahkan testing tanpa perlu check email
-4. **PENTING:** Enable semula untuk production!
+5. Klik **Save**
+6. **PENTING:** Untuk production, enable semula email confirmations!
 
 ### Step 5: Verify Row Level Security (RLS)
 

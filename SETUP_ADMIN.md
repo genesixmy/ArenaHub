@@ -2,12 +2,16 @@
 
 ## 🔐 Cara Membuat User Biasa
 
-### Langkah 1: Pastikan Email Confirmation Disabled
+### Langkah 1: Pastikan Email Signup dan Confirmation Configured
 
-1. Buka Supabase Dashboard → **Authentication** → **Settings**
-2. Scroll ke bahagian **Email Auth**
-3. Pastikan **"Enable Email Confirmations"** adalah **OFF** (unchecked)
-4. Save changes
+1. Buka Supabase Dashboard → **Authentication** → **Providers**
+2. Pastikan **Email** provider adalah **ENABLED** (hijau/turned on)
+   - Jika tidak, klik untuk enable
+3. Kemudian pergi ke **Authentication** → **Settings**
+4. Scroll ke bahagian **Email Auth**
+5. Pastikan **"Enable email signup"** adalah **ON** (checked) ✅
+6. Pastikan **"Enable Email Confirmations"** adalah **OFF** (unchecked) untuk development ❌
+7. Klik **Save** jika ada perubahan
 
 ### Langkah 2: Register User Baru
 
