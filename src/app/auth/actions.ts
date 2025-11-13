@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 import { generateSlug } from '@/lib/utils';
 
 export interface AuthResult {
@@ -91,6 +92,10 @@ export async function loginUser(formData: {
     if (error) {
       return { success: false, error: error.message };
     }
+
+    // Revalidate paths to ensure server-side auth state is refreshed
+    revalidatePath('/', 'layout');
+    revalidatePath('/dashboard');
 
     return { success: true, data };
   } catch (error: any) {

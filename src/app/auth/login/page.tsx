@@ -62,8 +62,12 @@ export default function LoginPage() {
 
       if (result.success) {
         toast.success('Log masuk berjaya!');
-        // Use window.location for hard navigation to ensure cookies are properly loaded
-        window.location.href = redirectTo;
+        // Refresh server components to ensure cookies are loaded, then navigate
+        router.refresh();
+        // Small delay to ensure refresh completes
+        setTimeout(() => {
+          router.push(redirectTo);
+        }, 100);
       } else {
         toast.error(result.error || 'Log masuk gagal');
       }
