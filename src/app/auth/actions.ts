@@ -80,7 +80,6 @@ export async function registerUser(formData: {
 export async function loginUser(formData: {
   email: string;
   password: string;
-  redirectTo?: string;
 }): Promise<AuthResult> {
   const supabase = await createClient();
 
@@ -94,19 +93,20 @@ export async function loginUser(formData: {
       return { success: false, error: error.message };
     }
 
+    if (!data.user) {
+      return { success: false, error: 'Gagal log masuk' };
+    }
+
     // Revalidate paths to ensure server-side auth state is refreshed
     revalidatePath('/', 'layout');
     revalidatePath('/dashboard');
 
-    // Redirect after successful login - this ensures cookies are properly set
-    // and middleware can detect the authenticated state
-    redirect(formData.redirectTo || '/dashboard');
+    // Return success - client will handle redirect
+    return {
+      success: true,
+      data: { user: data.user },
+    };
   } catch (error: any) {
-    // Only catch non-redirect errors
-    // redirect() throws a special error that should not be caught
-    if (error && typeof error === 'object' && 'digest' in error) {
-      throw error;
-    }
     return { success: false, error: error.message || 'Ralat tidak dijangka' };
   }
 }
