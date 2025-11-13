@@ -22,13 +22,16 @@ export async function registerUser(formData: {
   const supabase = await createClient();
 
   try {
-    // 1. Create auth user
+    // 1. Create auth user with metadata
+    // The database trigger will automatically create the user profile
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
       options: {
         data: {
           full_name: formData.fullName,
+          institution_id: formData.institutionId,
+          role: 'student',
         },
       },
     });
@@ -58,24 +61,8 @@ export async function registerUser(formData: {
       return { success: false, error: 'Gagal membuat akaun' };
     }
 
-    // 2. Create user profile in users table
-    const username = generateSlug(formData.fullName) + '-' + authData.user.id.substring(0, 8);
-
-    const { error: profileError } = await supabase.from('users').insert({
-      id: authData.user.id,
-      email: formData.email,
-      full_name: formData.fullName,
-      username: username,
-      role: 'student', // Default role
-      institution_id: formData.institutionId,
-    });
-
-    if (profileError) {
-      // If profile creation fails, we should clean up the auth user
-      // However, Supabase doesn't allow deleting users from client
-      // This will need to be handled manually or via admin
-      return { success: false, error: 'Gagal membuat profil: ' + profileError.message };
-    }
+    // Note: User profile is automatically created by database trigger (handle_new_user)
+    // The trigger reads user metadata and creates the profile with all fields including institution_id
 
     return {
       success: true,
